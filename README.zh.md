@@ -27,7 +27,7 @@ pnpm run docs:preview
 - `docs/posts` / `docs/en/posts`：中英文文章；`docs/notes` / `docs/en/notes`：笔记。目前为空，等待自己的内容。发布笔记时，在 `createSideBar.ts` 添加对应的目录项。
 - `docs/friends.md` / `docs/en/friends.md`：友链页面，等待添加朋友。
 - `docs/public/ava.png`：GitHub 头像，同时作为 favicon 和默认分享图片。
-- `docs/public/payments`：用户提供的收款码；页面通过 SVG 视口只展示二维码及白边，原图保留，文案为“请我喝杯咖啡”。
+- `docs/public/payments`：用户提供的收款码；通过 SVG 图片视口只展示二维码及白边，原始 JPEG 字节保留。点击沿用原主题图片查看器，可放大、旋转及切换，文案为“请我喝杯咖啡”。
 - `design/galen-assets.md`：原创纸片插画的生成提示词与场景映射。
 
 真实作品：codex-history、Clipboard。读到这里、原地开跑是明确标注的构想，尚未发布。

@@ -15,7 +15,7 @@ footer: false
 If you enjoy my work, feel free to support me in any way, as it will be the motivation for me to continue creating.
 </p>
 
-Click a QR code to view the original image. Thank you for your support, and feel free to send me a note.
+Click a QR code to open the image viewer. Thank you for your support, and feel free to send me a note.
 
 <script lang="ts" setup>
 import SupportMe from "../.vitepress/theme/components/SupportMe.vue";
