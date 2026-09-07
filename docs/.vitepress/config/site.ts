@@ -3,6 +3,7 @@ export const site = {
   name: 'Galen',
   email: 'yy324199@gmail.com',
   github: 'https://github.com/liuyoumi',
+  juejin: 'https://juejin.cn/user/167558220876360',
   douyin: 'https://v.douyin.com/53pzh9MDf7E/',
   avatar: '/ava.png',
   copyrightStart: 2026,

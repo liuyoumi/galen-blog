@@ -2,7 +2,7 @@
 
 Live slowly, keep a record, and leave a little curiosity for tomorrow.
 
-[中文配置指南](README.zh.md) · [GitHub](https://github.com/liuyoumi) · [Douyin](https://v.douyin.com/53pzh9MDf7E/)
+[中文配置指南](README.zh.md) · [GitHub](https://github.com/liuyoumi) · [Juejin](https://juejin.cn/user/167558220876360) · [Douyin](https://v.douyin.com/53pzh9MDf7E/)
 
 A bilingual VitePress blog by Galen, an AI application developer in Chengdu.
 
@@ -23,7 +23,7 @@ Set the build environment variables `SITE_URL` (the real public root URL) and `G
 
 Algolia uses the owner's `galen_blog` index, which still needs a DocSearch-compatible crawl after deployment and publishing. Giscus uses `liuyoumi/galen-blog` / Announcements. AdSense is pending. See the Chinese guide for the complete setup checklist.
 
-Articles, notes, and friends start empty. codex-history and Clipboard are real projects; One More Page and Run in Place are clearly labeled unreleased concepts.
+Two Juejin articles and their English translations are included. Notes and friends are currently empty. codex-history and Clipboard are real projects; One More Page and Run in Place are clearly labeled unreleased concepts.
 
 The avatar and payment images were supplied by the owner. Paper illustrations were generated with Codex imagegen; prompts are in [design/galen-assets.md](design/galen-assets.md).
 

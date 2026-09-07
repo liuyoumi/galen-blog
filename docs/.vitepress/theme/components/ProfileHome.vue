@@ -5,6 +5,7 @@ import PaperJourney from './PaperJourney.vue'
 import ProfileProjects from './ProfileProjects.vue'
 import ProfileTimeline from './ProfileTimeline.vue'
 import { site } from '../../config/site'
+import { juejinIcon } from '../../config/icons'
 
 const props = withDefaults(defineProps<{ locale?: 'zh' | 'en' }>(), { locale: 'zh' })
 const en = computed(() => props.locale === 'en')
@@ -60,8 +61,9 @@ const copy = computed(() => en.value ? {
 })
 const sections = ['projects', 'about', 'journey', 'contact']
 const socialLinks = computed(() => [
-  { label: 'GitHub', url: site.github },
-  { label: en.value ? 'Douyin' : '抖音', url: site.douyin },
+  { label: 'GitHub', url: site.github, icon: '' },
+  { label: en.value ? 'Juejin' : '掘金', url: site.juejin, icon: juejinIcon },
+  { label: en.value ? 'Douyin' : '抖音', url: site.douyin, icon: '' },
 ])
 
 function readScroll() {
@@ -215,7 +217,7 @@ onUnmounted(() => {
         <span class="letter-corner" aria-hidden="true">↗</span>
         <p class="eyebrow">04 / SAY HELLO</p><h2 id="contact-title">{{ copy.contactTitle }}</h2><p class="contact-intro">{{ copy.contactIntro }}</p>
         <a class="email-link" :href="`mailto:${site.email}`">{{ site.email }} <span aria-hidden="true">↗</span></a>
-        <div class="social-links"><a v-for="social in socialLinks" :key="social.url" :href="social.url" target="_blank" rel="noopener noreferrer">{{ social.label }} <span aria-hidden="true">↗</span></a></div>
+        <div class="social-links"><a v-for="social in socialLinks" :key="social.url" :href="social.url" target="_blank" rel="noopener noreferrer"><span v-if="social.icon" class="social-icon" aria-hidden="true" v-html="social.icon"></span>{{ social.label }} <span aria-hidden="true">↗</span></a></div>
         <p class="letter-signature">See you around,<br><span>Galen</span></p>
       </div>
     </section>
@@ -226,6 +228,8 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+.social-icon { display: inline-block; width: 15px; height: 14px; margin: 0 6px 0 0 !important; vertical-align: -2px; opacity: 1 !important; }
+.social-icon :deep(svg) { display: block; width: 100%; height: 100%; }
 .reading-print { position: relative; height: 138px; margin-bottom: 24px; border: 1px solid var(--vp-c-divider); background: var(--paper-sheet); border-radius: 4px 16px 16px 4px; transform: rotate(-2deg); overflow: hidden; }
 .book-spine { position: absolute; inset: 0 auto 0 18px; border-right: 1px solid var(--vp-c-divider); }
 .book-lines { position: absolute; inset: 28px 36px 45px 48px; background: repeating-linear-gradient(transparent 0 14px, var(--vp-c-divider) 14px 15px); }

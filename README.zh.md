@@ -2,7 +2,7 @@
 
 慢慢生活，认真记录，留一点好奇给明天。
 
-[English](README.md) · [GitHub](https://github.com/liuyoumi) · [抖音](https://v.douyin.com/53pzh9MDf7E/)
+[English](README.md) · [GitHub](https://github.com/liuyoumi) · [掘金](https://juejin.cn/user/167558220876360) · [抖音](https://v.douyin.com/53pzh9MDf7E/)
 
 成都 · AI 应用开发工程师。这里记录项目、阅读和生活。
 
@@ -24,7 +24,7 @@ pnpm run docs:preview
 
 - `docs/.vitepress/config/site.ts`：昵称、邮箱、社交链接、Algolia 搜索和 Giscus 评论。
 - `ProfileHome.vue`、`ProfileTimeline.vue`、`ProfileProjects.vue`：中英文生活介绍、经历、作品。
-- `docs/posts` / `docs/en/posts`：中英文文章；`docs/notes` / `docs/en/notes`：笔记。目前为空，等待自己的内容。发布笔记时，在 `createSideBar.ts` 添加对应的目录项。
+- `docs/posts` / `docs/en/posts`：中英文文章；`docs/notes` / `docs/en/notes`：笔记。已导入两篇掘金文章及英文译文，笔记目前为空。发布笔记时，在 `createSideBar.ts` 添加对应的目录项。
 - `docs/friends.md` / `docs/en/friends.md`：友链页面，等待添加朋友。
 - `docs/public/ava.png`：GitHub 头像，同时作为 favicon 和默认分享图片。
 - `docs/public/payments`：用户提供的收款码；通过 SVG 图片视口只展示二维码及白边，原始 JPEG 字节保留。点击沿用原主题图片查看器，可放大、旋转及切换，文案为“请我喝杯咖啡”。
