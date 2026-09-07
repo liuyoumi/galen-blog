@@ -24,9 +24,6 @@
       <a href="#payment-options">
         {{ isEN ? 'Buy me a coffee' : '请我喝杯咖啡' }}
       </a>
-      <a href="mailto:yy324199@gmail.com">
-        {{ isEN ? 'Send some kind words' : '给我一些鼓励' }}
-      </a>
     </div>
   </section>
   <div class="support-me hollow-text source-han-serif" aria-hidden="true">Support Me</div>
