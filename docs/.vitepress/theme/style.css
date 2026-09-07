@@ -177,3 +177,11 @@ main > div > div > pre > code {
 	/* scrollbar-color: rgba(0, 0, 0, 0.12) transparent; */
 	scrollbar-width: thin;
 }
+/* This standalone page has no article footer or next/previous navigation. */
+.sponsor-page .VPDoc,
+.sponsor-page .VPDoc .content {
+	padding-bottom: 0;
+}
+.sponsor-page .VPDocFooter {
+	display: none;
+}
