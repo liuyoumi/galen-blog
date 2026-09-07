@@ -7,31 +7,33 @@ import { TDesignResolver } from 'unplugin-vue-components/resolvers';
 import { createRssFileZH, createRssFileEN } from "../theme/utils/rss";
 import { handleHeadMeta } from "../theme/utils/handleHeadMeta";
 import { search as zhSearch } from './zh'
+import { site } from './site'
+import { siteUrl, gaMeasurementId } from './deployment'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lastUpdated: true,
   cleanUrls: true,
-  ignoreDeadLinks: true,
-  sitemap: {
-    hostname: 'https://justin3go.com'
-  },
+  ignoreDeadLinks: false,
+  ...(siteUrl ? { sitemap: { hostname: siteUrl } } : {}),
   head: [
-    ["script", { async: "", src: "https://www.googletagmanager.com/gtag/js?id=G-MB7XVBG1TQ" }],
+    ...(gaMeasurementId ? [
+    ["script", { async: "", src: `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}` }],
     [
       "script",
       {},
       `window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-MB7XVBG1TQ');`,
+      gtag('config', '${gaMeasurementId}');`,
     ],
-
+    ] as import('vitepress').HeadConfig[] : []),
     [
       "link",
       {
         rel: "icon",
-        href: "https://oss.justin3go.com/justin3goAvatar.ico",
+        href: site.avatar,
+        type: 'image/png',
       },
     ],
   ],
@@ -39,9 +41,8 @@ export default defineConfig({
   async transformHead(context) {
     return handleHeadMeta(context)
   },
-  buildEnd: (config: SiteConfig) => {
-    createRssFileZH(config);
-    createRssFileEN(config);
+  buildEnd: async (config: SiteConfig) => {
+    await Promise.all([createRssFileZH(config), createRssFileEN(config)]);
   },
 
   themeConfig: {
@@ -60,9 +61,7 @@ export default defineConfig({
     search: {
       provider: 'algolia',
       options: {
-        appId: 'LGWG5THRKY',
-        apiKey: '8fb5c1dc72bc92580f7fa1471ad2b814',
-        indexName: 'justin3go',
+        ...site.algolia,
         locales: { ...zhSearch }
       }
     },

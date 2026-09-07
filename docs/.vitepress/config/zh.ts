@@ -1,60 +1,29 @@
 import { type DefaultTheme, defineConfig } from 'vitepress'
+import { site } from './site'
+import { siteUrl } from './deployment'
+import { createSideBarZH } from '../theme/utils/createSideBar'
 
-import { createSideBarZH } from "../theme/utils/createSideBar";
-
-const sideBarConfig = createSideBarZH();
-// const firstNoteItemLink = sideBarConfig['/notes/'][0].items[0].link
-
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Justin3go",
-  description: "坚持深耕技术领域的 T 型前端程序员, 关注独立开发与 AI，喜欢 Vuejs、Nestjs, 还会点 Python、搜索引擎、NLP、Web3、后端",
-  lang: "zh-Hans", //语言
-
+  title: site.name,
+  description: site.description.zh,
+  lang: 'zh-Hans',
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
-    nav: [
-			{ text: "首页", link: "/", activeMatch: '^/$' },
-			{ text: "博客", link: "/blog", activeMatch: '^/blog(?:\\?.*)?$' },
-			{ text: "归档", link: "/archive", activeMatch: '/archive' },
-			// { text: "笔记", link: firstNoteItemLink, activeMatch: '/notes/' },
-			{ text: "赞助", link: "/support-me", activeMatch: '/support-me' },
-    ],
+    sidebar: createSideBarZH(),
+    nav: [{"text": "首页", "link": "/", "activeMatch": "^\\/(?:\\?.*)?$"}, {"text": "博客", "link": "/blog", "activeMatch": "^\\/blog(?:\\?.*)?$"}, {"text": "归档", "link": "/archive", "activeMatch": "^\\/archive(?:\\?.*)?$"}, {"text": "赞助", "link": "/support-me", "activeMatch": "^\\/support-me(?:\\?.*)?$"}],
     footer: {
-      message: 'Copyright © 2022-present <a href="https://justin3go.com/">Justin3go</a>.' +
-			'&nbsp;&nbsp;&nbsp;✧ <a href="https://justin3go.com/#projects">个人项目</a>' +
-			'&nbsp;&nbsp;&nbsp;✧ <a href="https://justin3go.com/#contact">联系方式</a>' +
-			'&nbsp;&nbsp;&nbsp;✧ <a href="https://justin3go.com/friends">友情链接</a>',
-      
-      // copyright: 'Copyright © 2022-present <a href="https://justin3go.com/about">Justin3go</a>.',
+      message: `Copyright © ${site.copyrightStart}–present <a href="/">${site.name}</a>. &nbsp; <a href="/#projects">个人作品</a> · <a href="/#contact">联系方式</a> · <a href="/friends">友情链接</a>`,
     },
-    docFooter: {
-      prev: '上一篇',
-      next: '下一篇'
-    },
-    outlineTitle: "当前页面",
-    lastUpdatedText: "最近更新时间",
-
-    sidebar: sideBarConfig,
-
     socialLinks: [
-      { icon: 'x', link: 'https://x.com/Justin1024go' },
-      { icon: 'github', link: 'https://github.com/Justin3go/justin3go.com' },
-      {
-        icon: {
-          svg: '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><title>RSS</title><path d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z"/><path d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z"/><path d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z"/></svg>',
-        },
-        link: "/feed.xml",
-      },
+      { icon: 'github', link: site.github },
+      { icon: { svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M16 2h-4v13a3 3 0 1 1-3-3v-4a7 7 0 1 0 7 7V8a9 9 0 0 0 5 2V6a5 5 0 0 1-5-4Z"/></svg>' }, link: site.douyin, ariaLabel: 'Douyin' },
+      ...(siteUrl ? [{ icon: { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><title>RSS</title><path d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z"/><path d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z"/><path d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z"/></svg>' }, link: '/feed.xml' }] : []),
     ],
-
-    editLink: {
-      pattern: "https://github.com/Justin3go/justin3go.com/edit/master/docs/:path",
-      text: "在 GitHub 上编辑此页",
-    },
-    returnToTopLabel: "回到顶部",
-    sidebarMenuLabel: "目录",
-    darkModeSwitchLabel: "深色模式",
+    docFooter: { prev: '上一篇', next: '下一篇' },
+    outlineTitle: '当前页面',
+    lastUpdatedText: '最近更新时间',
+    returnToTopLabel: '回到顶部',
+    sidebarMenuLabel: '目录',
+    darkModeSwitchLabel: '深色模式',
   },
 })
 

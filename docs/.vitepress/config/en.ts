@@ -1,49 +1,23 @@
-import { defineConfig} from 'vitepress'
+import { type DefaultTheme, defineConfig } from 'vitepress'
+import { site } from './site'
+import { siteUrl } from './deployment'
+import { createSideBarEN } from '../theme/utils/createSideBar'
 
-import { createSideBarEN } from "../theme/utils/createSideBar";
-
-const sideBarConfig = createSideBarEN();
-// const firstNoteItemLink = sideBarConfig['/en/notes/'][0].items[0].link
-
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Justin3go",
-  description: "A T-shaped front-end developer who is committed to deepening expertise in the technical field, focuses on independent development and AI, enjoys working with Vue.js and Nest.js, and has some knowledge of Python, search engines, NLP, Web3, and back-end development.",
-  lang: "en-US", //语言
-
+  title: site.name,
+  description: site.description.en,
+  lang: 'en-US',
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
-    nav: [
-			{ text: "Home", link: "/en/", activeMatch: '^/en/$' },
-			{ text: "Blog", link: "/en/blog", activeMatch: '^/en/blog(?:\\?.*)?$' },
-      { text: "Archive", link: "/en/archive/", activeMatch: '/en/archive/' },
-			// { text: "Notes", link: firstNoteItemLink, activeMatch: '/en/notes/' },
-			{ text: "Sponsor", link: "/en/support-me", activeMatch: '/en/support-me' },
-    ],
+    sidebar: createSideBarEN(),
+    nav: [{"text": "Home", "link": "/en/", "activeMatch": "^\\/en\\/(?:\\?.*)?$"}, {"text": "Blog", "link": "/en/blog", "activeMatch": "^\\/en\\/blog(?:\\?.*)?$"}, {"text": "Archive", "link": "/en/archive", "activeMatch": "^\\/en\\/archive(?:\\?.*)?$"}, {"text": "Sponsor", "link": "/en/support-me", "activeMatch": "^\\/en\\/support-me(?:\\?.*)?$"}],
     footer: {
-      message: 'Copyright © 2022-present <a href="https://justin3go.com/en/">Justin3go</a>.' +
-			'&nbsp;&nbsp;&nbsp;✧ <a href="https://justin3go.com/en/#projects">Projects</a>' +
-			'&nbsp;&nbsp;&nbsp;✧ <a href="https://justin3go.com/en/#contact">Contact</a>' +
-			'&nbsp;&nbsp;&nbsp;✧ <a href="https://justin3go.com/en/friends">Friends</a>',
-      
-      // copyright: 'Copyright © 2022-present <a href="https://justin3go.com/about">Justin3go</a>.',
+      message: `Copyright © ${site.copyrightStart}–present <a href="/en/">${site.name}</a>. &nbsp; <a href="/en/#projects">Projects</a> · <a href="/en/#contact">Contact</a> · <a href="/en/friends">Friends</a>`,
     },
-
-    sidebar: sideBarConfig,
-
     socialLinks: [
-      { icon: 'x', link: 'https://x.com/Justin1024go' },
-      { icon: 'github', link: 'https://github.com/Justin3go/justin3go.com' },
-      {
-        icon: {
-          svg: '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><title>RSS</title><path d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z"/><path d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z"/><path d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z"/></svg>',
-        },
-        link: "/feed-en.xml",
-      },
+      { icon: 'github', link: site.github },
+      { icon: { svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M16 2h-4v13a3 3 0 1 1-3-3v-4a7 7 0 1 0 7 7V8a9 9 0 0 0 5 2V6a5 5 0 0 1-5-4Z"/></svg>' }, link: site.douyin, ariaLabel: 'Douyin' },
+      ...(siteUrl ? [{ icon: { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><title>RSS</title><path d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z"/><path d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z"/><path d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z"/></svg>' }, link: '/feed-en.xml' }] : []),
     ],
 
-    editLink: {
-      pattern: "https://github.com/Justin3go/justin3go.com/edit/master/docs/:path"
-    },
   },
 })

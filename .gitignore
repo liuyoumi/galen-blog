@@ -132,3 +132,6 @@ dist
 # vitepress
 docs/.vitepress/dist
 cache
+
+# pnpm local sandbox cache
+.pnpm-store/

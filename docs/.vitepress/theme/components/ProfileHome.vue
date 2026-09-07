@@ -4,7 +4,7 @@ import { withBase } from 'vitepress'
 import PaperJourney from './PaperJourney.vue'
 import ProfileProjects from './ProfileProjects.vue'
 import ProfileTimeline from './ProfileTimeline.vue'
-import ContactImageDialog from './ContactImageDialog.vue'
+import { site } from '../../config/site'
 
 const props = withDefaults(defineProps<{ locale?: 'zh' | 'en' }>(), { locale: 'zh' })
 const en = computed(() => props.locale === 'en')
@@ -18,44 +18,51 @@ let frame = 0
 let hashFrame = 0
 
 const copy = computed(() => en.value ? {
-  hello: 'Hi, I’m Justin3go.', role: 'Independent maker · Beijing, China',
+  hello: 'Hi, I’m Galen.', role: 'AI application engineer · Chengdu, China',
   headline: ['Little pieces of', 'work & life.'],
-  intro: 'Write code. Collect moments.',
-  detail: 'Independent projects, photography, and badminton. Turning curiosity into things I make, and ordinary days into moments I keep.',
+  intro: 'Live slowly. Keep a record.',
+  detail: 'A meat-loving vegetarian, with room in the day for the treadmill, the pool, a book, and another game.',
   work: 'Explore my work', blog: 'Read the blog',
   nav: ['Work', 'About', 'Journey', 'Contact'],
-  workTitle: 'Made to be used.', workIntro: 'Small ideas, real products. A selection of the tools and experiments I keep building.',
-  aboutTitle: 'More than a screen.',
-  about: 'My background is in software engineering. What keeps me going is turning a real problem into something useful, then making it a little better.',
-  aboutMore: 'I enjoy open source and sharing what I learn. Finish something, learn from it, and keep going.',
-  photo: 'Seeing the everyday', photoBody: 'Landscapes, street corners, and the light on an ordinary day. Usually with a Sony A7C II.',
-  sport: 'Time away from the desk', sportBody: 'At least three hours of badminton a week. A different kind of focus, and a good reason to close the laptop.',
-  journeyTitle: 'Still on the way.', journeyIntro: 'From learning to build, to building things that matter to me.',
-  future: '2101: hopefully still here. 3001: still figuring things out.',
-  contactTitle: 'Let’s make a connection.', contactIntro: 'An idea, a question, or a simple hello — my inbox is open. A little context is always welcome.',
-  motto: 'Execution wins. Persistence compounds.', journal: 'Read blog',
-  photography: 'PHOTOGRAPHY', badminton: 'BADMINTON', top: 'Back to top', social: ['WeChat', 'X / Twitter', 'GitHub', 'Juejin', 'WeChat articles']
+  workTitle: 'Made, and imagined.', workIntro: 'Two open-source tools, plus a couple of ideas still on paper.',
+  aboutTitle: 'A few pages of everyday life.',
+  about: 'An AI application engineer in Chengdu, and a meat-loving vegetarian. Life is full of little contradictions; I like keeping a record of them.',
+  aboutMore: 'No rush to get to the last page. There is always something new to notice.',
+  photo: 'Just one more chapter', photoBody: 'Lately, I have been a little hooked on Yu Hua. Some pages fly by; others make me stop for a while.',
+  sport: 'Moving, at my own pace', sportBody: 'Running, strictly on a treadmill. Staying in one place can still mean getting somewhere.',
+  swimming: 'Learning to swim', swimmingBody: 'Still a beginner. Taking it one breath and one kick at a time.',
+  gaming: 'One more round', gamingBody: 'A dedicated Eggy Party and Phasmophobia player. There is always room for another round.',
+  journeyTitle: 'Still on the way.', journeyIntro: 'A few stops so far, with plenty of blank pages ahead.',
+  future: 'The next chapter is still being written.',
+  contactTitle: 'Say hello.', contactIntro: 'A question, a book recommendation, or a simple hello — I would love to hear from you.',
+  motto: 'A little curiosity for tomorrow.', journal: 'Read blog',
+  photography: 'READING', badminton: 'TREADMILL DIARY', top: 'Back to top',
 } : {
-  hello: 'Hi，我是 Justin3go。', role: '独立产品创造者 · 中国北京',
-  headline: ['把想法，', '拼成日常。'],
-  intro: '写代码，也收集生活的碎片。',
-  detail: '独立开发、摄影、羽毛球。把好奇心做成作品，把普通的一天认真收藏。',
+  hello: 'Hi，我是 Galen。', role: 'AI 应用开发工程师 · 中国成都',
+  headline: ['慢慢生活，', '认真记录。'],
+  intro: '留一点好奇给明天。',
+  detail: '一个爱吃肉的素食主义者。跑步机、泳池、书页和游戏，都是日常的一部分。',
   work: '看看我的作品', blog: '阅读博客',
   nav: ['作品', '关于', '经历', '联系'],
-  workTitle: '做些真正用得上的东西。', workIntro: '从一个小念头开始，做成可以打开、可以使用的产品。这里是我的一些实践。',
-  aboutTitle: '屏幕之外，也有热爱。',
-  about: '我的职业背景是软件工程。比起罗列使用过的框架，我更在意有没有解决真实问题，把产品做出来，再一点点打磨好。',
-  aboutMore: '喜欢开源、分享，也习惯公开记录。先完成，再学习，然后继续创造。',
-  photo: '留住普通的一天', photoBody: '风光、街角、生活里的光线。拿着 Sony A7C II，把走过的日常多看一眼。',
-  sport: '给生活换个节奏', sportBody: '每周至少 3 小时羽毛球。离开屏幕，专心接好下一拍，也希望球价能早日降下来。',
-  journeyTitle: '一路走来，继续向前。', journeyIntro: '从学习如何写代码，到慢慢找到自己想创造的东西。',
-  future: '2101，希望我还活着；3001，千年修为，我还在修炼。',
-  contactTitle: '聊聊你的想法。', contactIntro: '关于产品、技术，或者打个招呼。如果你从博客而来，记得简单介绍一下来意。',
-  motto: '赢在执行力，贵在坚持。', journal: '阅读博客',
-  photography: 'PHOTOGRAPHY / 摄影', badminton: 'BADMINTON / 羽毛球', top: '回到顶部', social: ['微信', 'X / 推特', 'GitHub', '掘金', '公众号']
+  workTitle: '做成的，和想做的。', workIntro: '两个已经开源的小工具，还有一些暂时写在纸上的想法。',
+  aboutTitle: '日常，也值得翻几页。',
+  about: '住在成都，做 AI 应用开发。也是一个爱吃肉的素食主义者。生活里有些小矛盾，记录下来还挺有意思。',
+  aboutMore: '不急着翻到最后一页，日子里总有新的细节值得留意。',
+  photo: '再看一章就好', photoBody: '最近读余华有点上头。有些页一口气翻过，有些句子，想停下来多看一会儿。',
+  sport: '动一动，按自己的节奏', sportBody: '跑步，仅限跑步机上。虽然还在原地，今天也算往前跑了一点。',
+  swimming: '游泳，还在学习中', swimmingBody: '从换气和打腿慢慢练起，先学会和水好好相处。',
+  gaming: '再玩一局', gamingBody: '蛋仔派对和恐鬼症重度爱好者。玩得投入，也玩得开心。',
+  journeyTitle: '一路走来，继续向前。', journeyIntro: '记录几个走过的路口，前面还有很多空白页。',
+  future: '下一章，还在慢慢写。',
+  contactTitle: '打个招呼吧。', contactIntro: '聊聊技术，推荐一本书，或者简单说声你好。很高兴在这里认识你。',
+  motto: '留一点好奇给明天。', journal: '阅读博客',
+  photography: 'READING / 阅读', badminton: 'TREADMILL / 跑步机', top: '回到顶部',
 })
 const sections = ['projects', 'about', 'journey', 'contact']
-const socialUrls = ['https://oss.justin3go.com/weixin.jpg', 'https://x.com/Justin1024go', 'https://github.com/Justin3go', 'https://juejin.cn/user/220366354020749/posts', 'https://oss.justin3go.com/wxgzh.jpg']
+const socialLinks = computed(() => [
+  { label: 'GitHub', url: site.github },
+  { label: en.value ? 'Douyin' : '抖音', url: site.douyin },
+])
 
 function readScroll() {
   frame = 0
@@ -129,7 +136,7 @@ onUnmounted(() => {
     <section class="home-hero" data-paper-section="intro" aria-labelledby="hero-title">
       <span id="关于我" class="anchor-alias"></span><span id="about-me" class="anchor-alias"></span>
       <div class="hero-copy">
-        <div class="identity"><img :src="withBase('/ava.png')" alt="" width="42" height="42"><div><p>{{ copy.hello }}</p><span>{{ copy.role }}</span></div></div>
+        <div class="identity"><img :src="withBase(site.avatar)" alt="" width="42" height="42"><div><p>{{ copy.hello }}</p><span>{{ copy.role }}</span></div></div>
         <p class="hero-kicker">{{ en ? 'A SMALL COLLECTION OF WORK & LIFE' : '一些创造，一些生活，一直保持好奇。' }}</p>
         <h1 id="hero-title"><span class="title-paper">{{ copy.headline[0] }}</span><span class="title-paper hero-accent">{{ copy.headline[1] }}</span></h1>
         <p class="hero-intro">{{ copy.intro }}</p>
@@ -139,7 +146,7 @@ onUnmounted(() => {
       </div>
       <div class="hero-art scene-anchor" data-paper-anchor aria-hidden="true">
         <div class="hero-paper-field"></div>
-        <div class="hero-stamp"><span>JUSTIN3GO</span><span>WORK / LIFE / NOTES</span></div>
+        <div class="hero-stamp"><span>GALEN</span><span>WORK / LIFE / NOTES</span></div>
         <span class="hero-tape"></span>
         <span class="hero-scribble">hello, world.</span>
       </div>
@@ -165,11 +172,8 @@ onUnmounted(() => {
       <div class="scene-visual" aria-hidden="true"><div class="scene-anchor" data-paper-anchor><PaperJourney inline-scene="photo" :motion="motion" :locale="locale" /></div></div>
       <div class="spread-copy">
         <header class="section-heading" data-reveal><p class="eyebrow">02 / OFF THE SCREEN</p><h2 id="about-title">{{ copy.aboutTitle }}</h2><p class="section-description">{{ copy.about }}</p></header>
-        <article class="life-card camera-card" data-reveal>
-          <div class="landscape-print" aria-hidden="true">
-            <svg viewBox="0 0 440 180" fill="none"><path class="sky" d="M0 0h440v180H0z"/><circle cx="327" cy="52" r="23"/><path class="mountain-back" d="m0 143 103-82 86 73 78-87 173 132H0Z"/><path class="mountain-front" d="m0 168 155-74 96 69 72-46 117 62H0Z"/><path class="landscape-line" d="M26 157c118-3 184 2 274 7s87-8 113-11"/></svg>
-            <span>EVERYDAY, THROUGH MY LENS.</span>
-          </div>
+        <article class="life-card reading-card" data-reveal>
+          <div class="reading-print" aria-hidden="true"><span class="book-spine"></span><span class="book-lines"></span><span class="book-caption">ONE MORE CHAPTER.</span></div>
           <p class="eyebrow">{{ copy.photography }}</p><h3>{{ copy.photo }}</h3><p class="life-description">{{ copy.photoBody }}</p>
         </article>
         <p class="margin-note">{{ copy.aboutMore }}</p>
@@ -182,11 +186,15 @@ onUnmounted(() => {
         <p class="eyebrow">02 / A DIFFERENT RHYTHM</p>
         <h2 id="play-title">{{ copy.sport }}</h2>
         <p class="section-description">{{ copy.sportBody }}</p>
-        <div class="court-note">
-          <span class="note-pin" aria-hidden="true"></span>
-          <svg class="court-sketch" viewBox="0 0 340 140" fill="none" aria-hidden="true"><path d="M37 12h266v115H37zM52 12v115M288 12v115M37 35h266M37 103h266M37 70h266M170 12v115"/><path class="court-flight" d="M59 95c20-100 168-95 232-39m-14-4 17 6-14 8"/></svg>
-          <p>{{ en ? 'Close the laptop. Play the next shot.' : '合上电脑，接好下一拍。' }}</p>
-          <span>{{ en ? 'A little focus. A lot of joy.' : '专心一点，也尽兴一点。' }}</span>
+        <div class="life-extras">
+          <article class="life-extra">
+            <div class="life-sticker"><PaperJourney inline-scene="swim" vignette :motion="motion" :locale="locale" /></div>
+            <h3>{{ copy.swimming }}</h3><p>{{ copy.swimmingBody }}</p>
+          </article>
+          <article class="life-extra">
+            <div class="life-sticker"><PaperJourney inline-scene="game" vignette :motion="motion" :locale="locale" /></div>
+            <h3>{{ copy.gaming }}</h3><p>{{ copy.gamingBody }}</p>
+          </article>
         </div>
       </div>
     </section>
@@ -206,18 +214,29 @@ onUnmounted(() => {
       <div class="spread-copy contact-letter">
         <span class="letter-corner" aria-hidden="true">↗</span>
         <p class="eyebrow">04 / SAY HELLO</p><h2 id="contact-title">{{ copy.contactTitle }}</h2><p class="contact-intro">{{ copy.contactIntro }}</p>
-        <a class="email-link" href="mailto:just@justin3go.com">just@justin3go.com <span aria-hidden="true">↗</span></a>
-        <div class="social-links"><template v-for="(url, i) in socialUrls" :key="url"><ContactImageDialog v-if="i === 0 || i === 4" :src="url" :label="copy.social[i]" :en="en" /><a v-else :href="url" target="_blank" rel="noopener noreferrer">{{ copy.social[i] }} <span aria-hidden="true">↗</span></a></template></div>
-        <p class="letter-signature">See you around,<br><span>Justin3go</span></p>
+        <a class="email-link" :href="`mailto:${site.email}`">{{ site.email }} <span aria-hidden="true">↗</span></a>
+        <div class="social-links"><a v-for="social in socialLinks" :key="social.url" :href="social.url" target="_blank" rel="noopener noreferrer">{{ social.label }} <span aria-hidden="true">↗</span></a></div>
+        <p class="letter-signature">See you around,<br><span>Galen</span></p>
       </div>
     </section>
 
-    <footer class="home-footer"><span>Justin3go <span class="footer-dot">·</span> {{ copy.motto }}</span><a class="vp-raw" href="#profile-top" @click="jumpTo($event, 'profile-top')">{{ copy.top }} ↑</a></footer>
+    <footer class="home-footer"><span>Galen <span class="footer-dot">·</span> {{ copy.motto }}</span><a class="vp-raw" href="#profile-top" @click="jumpTo($event, 'profile-top')">{{ copy.top }} ↑</a></footer>
     <PaperJourney :motion="motion" :locale="locale" />
   </main>
 </template>
 
 <style scoped>
+.reading-print { position: relative; height: 138px; margin-bottom: 24px; border: 1px solid var(--vp-c-divider); background: var(--paper-sheet); border-radius: 4px 16px 16px 4px; transform: rotate(-2deg); overflow: hidden; }
+.book-spine { position: absolute; inset: 0 auto 0 18px; border-right: 1px solid var(--vp-c-divider); }
+.book-lines { position: absolute; inset: 28px 36px 45px 48px; background: repeating-linear-gradient(transparent 0 14px, var(--vp-c-divider) 14px 15px); }
+.book-caption { position: absolute; bottom: 15px; left: 48px; font: 9px var(--vp-font-family-mono); color: var(--vp-c-text-2); letter-spacing: .08em; }
+.life-extras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 28px; }
+.life-extra { min-width: 0; padding-top: 12px; border-top: 1px solid var(--vp-c-divider); }
+.life-sticker { height: 150px; max-width: 170px; margin: 0 auto 12px; }
+.life-extra h3 { font-size: 14px; margin-bottom: 8px; }
+.life-extra p { color: var(--vp-c-text-2); font-size: 12px; line-height: 1.9; }
+@media (max-width: 380px) { .life-extras { grid-template-columns: 1fr; } }
+
 .profile-home {
   --home-accent: var(--vp-c-brand-1);
   --paper-sheet: color-mix(in srgb, var(--vp-c-bg) 94%, var(--vp-c-brand-1) 6%);
@@ -303,7 +322,7 @@ onUnmounted(() => {
 .contact-intro { font-size: 14px; line-height: 1.9; color: var(--vp-c-text-2); margin-top: 21px !important; }
 .email-link { display: inline-flex; align-items: center; gap: 16px; font-size: clamp(22px, 2.6vw, 38px); letter-spacing: -.055em; margin-top: 28px; border-bottom: 1px solid var(--vp-c-divider); padding-bottom: 8px; white-space: nowrap; }.email-link:hover { color: var(--home-accent); }.email-link span { font-size: .8em; }
 .social-links { display: flex; flex-wrap: wrap; gap: 17px 20px; margin-top: 25px; font-size: 12px; color: var(--vp-c-text-2); }.social-links a { position: relative; isolation: isolate; padding: 7px 10px; }.social-links a::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--vp-c-bg); clip-path: var(--paper-button-edge); pointer-events: none; }.social-links a:nth-child(2n) { transform: rotate(1deg); }.social-links a:hover { color: var(--home-accent); }.social-links span { margin-left: 3px; opacity: .6; }
-.letter-signature { font: italic 14px/1.8 Georgia,serif; margin-top: 38px !important; color: var(--vp-c-text-2); }.letter-signature span { font-size: 24px; color: var(--home-accent); }
+.letter-signature { font: italic 14px/1.8 Georgia,serif; margin-top: 38px !important; color: var(--vp-c-text-2); }.letter-signature span { font-family: "Niconne", cursive; font-size: 32px; color: var(--home-accent); }
 .home-footer { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--vp-c-divider); padding: 26px 0 35px; font-size: 10px; color: var(--vp-c-text-2); }.home-footer a:hover { color: var(--home-accent); }.footer-dot { padding: 0 7px; }.anchor-alias { position: absolute; top: 0; scroll-margin-top: var(--chapter-scroll-offset); }.home-hero .anchor-alias { scroll-margin-top: var(--vp-nav-height); }
 .profile-home :deep(.has-arrived) { animation: home-arrive .7s cubic-bezier(.2,.7,.2,1) both; }@keyframes home-arrive { from { opacity: .35; translate: 0 20px; } to { opacity: 1; translate: 0 0; } }
 .motion-off :deep(*), .motion-off :deep(*::before), .motion-off :deep(*::after) { animation: none !important; transition: none !important; }

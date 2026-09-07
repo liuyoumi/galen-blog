@@ -2,7 +2,7 @@
 # https://vitepress.dev/reference/default-theme-home-page
 layout: doc
 title: 博客
-description: Justin3go 的技术博客，记录 AI、独立开发、前端工程与持续创造。
+description: Galen 的技术博客，记录技术探索，也收藏生活片段。
 editLink: false
 lastUpdated: false
 isNoComment: true
@@ -10,6 +10,8 @@ isNoBackBtn: true
 ---
 
 <!-- 之所以将代码写在 md 里面，而非单独封装为 Vue 组件，因为 aside 不会动态刷新，参考 https://github.com/vuejs/vitepress/issues/2686 -->
+<div v-if="!posts.length" class="empty-state"><h1>博客</h1><p>这里的故事，正准备从第一篇开始。</p></div>
+
 <template v-for="post in curPosts" :key="post.url">
   <h2 :id="post.title" class="post-title">
     <a :href="post.url">{{ post.title }}</a>
@@ -32,7 +34,7 @@ isNoBackBtn: true
 </template>
 
 <!-- <Pagination /> -->
-<div class="pagination-container">
+<div v-if="total > 0" class="pagination-container">
   <t-pagination
     v-model="current"
     v-model:pageSize="pageSize"
@@ -101,6 +103,8 @@ const onCurrentChange: PaginationProps["onCurrentChange"] = (
 };
 </script>
 <style lang="scss" scoped>
+.empty-state { padding: 48px 0 80px; }
+.empty-state p { color: var(--vp-c-text-2); }
 /* 去掉.vp-doc li + li 的 margin-top */
 .pagination-container {
 	margin-top: 60px;

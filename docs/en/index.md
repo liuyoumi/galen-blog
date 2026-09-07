@@ -2,7 +2,7 @@
 layout: page
 pageClass: portfolio-page
 title: Create, explore, repeat
-description: Justin3go is an independent maker in Beijing. Explore my products, engineering journey, photography, and everyday life.
+description: Galen is an AI application engineer in Chengdu. Explore my products, engineering journey, reading, exercise, and everyday life.
 outline: false
 editLink: false
 lastUpdated: false

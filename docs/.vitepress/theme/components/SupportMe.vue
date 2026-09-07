@@ -5,43 +5,45 @@
       <h1 id="support-title">{{ isEN ? 'Support my work' : '支持我的创作' }}</h1>
     </header>
 
-    <div class="payment-options">
-      <figure class="payment-option">
-        <div class="payment-code">
-          <img :src="weiXinPayUrl" :alt="isEN ? 'WeChat Pay QR code' : '微信收款码'" width="200" height="200" />
-        </div>
-        <figcaption>{{ isEN ? 'WeChat Pay' : '微信支付' }}</figcaption>
-      </figure>
-      <figure class="payment-option">
-        <div class="payment-code">
-          <img :src="zhiFuBaoPayUrl" :alt="isEN ? 'Alipay QR code' : '支付宝收款码'" width="200" height="200" />
-        </div>
-        <figcaption>{{ isEN ? 'Alipay' : '支付宝' }}</figcaption>
+    <div id="payment-options" class="payment-options">
+      <figure v-for="payment in payments" :key="payment.id" class="payment-option">
+        <a class="payment-code" :href="withBase(payment.src)" target="_blank" rel="noopener noreferrer"
+          :aria-label="isEN ? `Open original ${payment.en} QR code` : `查看${payment.zh}收款码原图`">
+          <svg viewBox="0 0 100 100" width="200" height="200" aria-hidden="true">
+            <rect width="100" height="100" fill="white" />
+            <svg x="9" y="9" width="82" height="82" :viewBox="payment.crop" overflow="hidden">
+              <image :href="withBase(payment.src)" :width="payment.width" :height="payment.height" />
+            </svg>
+          </svg>
+        </a>
+        <figcaption>{{ isEN ? payment.en : payment.zh }}</figcaption>
       </figure>
     </div>
 
     <div class="support-actions">
-      <a :href="koFiUrl" target="_blank" rel="noopener noreferrer">
+      <a href="#payment-options">
         {{ isEN ? 'Buy me a coffee' : '请我喝杯咖啡' }}
       </a>
-      <a href="mailto:just@justin3go.com">
+      <a href="mailto:yy324199@gmail.com">
         {{ isEN ? 'Send some kind words' : '给我一些鼓励' }}
       </a>
     </div>
   </section>
   <div class="support-me hollow-text source-han-serif" aria-hidden="true">Support Me</div>
-  <div class="my-name hollow-text source-han-serif" aria-hidden="true">I'm Justin3go</div>
+  <div class="my-name hollow-text source-han-serif" aria-hidden="true">I'm Galen</div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRoute } from 'vitepress';
+import { useRoute, withBase } from 'vitepress';
 
 const route = useRoute();
 const isEN = computed(() => route.path.startsWith('/en/'));
-const weiXinPayUrl = 'https://oss.justin3go.com/blogs/justin3go_weixin_pay.jpg';
-const zhiFuBaoPayUrl = 'https://oss.justin3go.com/blogs/justin3go_zhifubao_pay.jpg';
-const koFiUrl = 'https://ko-fi.com/V7V6YU3UT';
+// Clip the original images at render time; preserve QR pixels and add a quiet zone.
+const payments = [
+  { id: 'wechat', zh: '微信支付', en: 'WeChat Pay', src: '/payments/wechat-pay.jpg', width: 828, height: 1124, crop: '238 292 352 352' },
+  { id: 'alipay', zh: '支付宝', en: 'Alipay', src: '/payments/alipay.jpg', width: 1280, height: 1919, crop: '248 716 784 784' },
+];
 </script>
 
 <style scoped>
@@ -80,7 +82,8 @@ const koFiUrl = 'https://ko-fi.com/V7V6YU3UT';
   border-radius: 8px;
   background: #fff;
 }
-.payment-code img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+.payment-code > svg { display: block; width: 100%; height: auto; }
+.payment-code:focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: 3px; }
 .payment-option figcaption { margin-top: 12px; font-size: 13px; color: var(--vp-c-text-2); }
 .support-actions {
   display: flex;
@@ -105,12 +108,9 @@ const koFiUrl = 'https://ko-fi.com/V7V6YU3UT';
 @media (max-width: 480px) {
   .support-panel { margin-top: 8px; padding: 28px 18px 20px; }
   .support-heading h1 { font-size: 24px; }
-  .payment-options { gap: 12px; margin: 24px 0; }
+  .payment-options { grid-template-columns: minmax(0, 240px); justify-content: center; gap: 24px; margin: 24px 0; }
   .payment-code { padding: 6px; }
   .support-actions { gap: 8px 20px; }
-}
-@media (max-width: 359px) {
-  .payment-options { grid-template-columns: minmax(0, 200px); justify-content: center; gap: 22px; }
 }
 .support-me {
 	position: fixed;
@@ -139,6 +139,10 @@ const koFiUrl = 'https://ko-fi.com/V7V6YU3UT';
 	font-weight: 900;
 }
 .hollow-text {
+	max-width: 100vw;
+	overflow: hidden;
+	white-space: nowrap;
+	pointer-events: none;
 	/* 设置文本颜色为透明 */
 	color: var(--vp-c-bg);
 

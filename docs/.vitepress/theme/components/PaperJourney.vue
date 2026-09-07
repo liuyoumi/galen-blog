@@ -4,10 +4,10 @@ import { PAPER_SCENES, fragmentTransform, poseFrame, badmintonPose, type PaperSc
 import { stageShot, interpolateStage, type StageShot } from './paperStage'
 import { loadPaperSprite } from './paperSprite'
 
-type JourneyScene = PaperScene | 'intro'
+type JourneyScene = PaperScene | 'intro' | 'swim' | 'game'
 const JOURNEY_SCENES: readonly JourneyScene[] = ['intro', ...PAPER_SCENES]
 
-const props = withDefaults(defineProps<{ motion: boolean; locale?: 'zh' | 'en'; inlineScene?: PaperScene }>(), { locale: 'zh' })
+const props = withDefaults(defineProps<{ motion: boolean; locale?: 'zh' | 'en'; inlineScene?: JourneyScene; vignette?: boolean }>(), { locale: 'zh' })
 const layer = ref<HTMLElement>()
 const stage = ref<HTMLElement>()
 const canvas = ref<HTMLCanvasElement>()
@@ -18,17 +18,21 @@ const current = ref<JourneyScene>(props.inlineScene ?? 'intro')
 const inHero = ref(true)
 const sceneNumber = computed(() => JOURNEY_SCENES.indexOf(current.value) + 1)
 const descriptions = computed(() => props.locale === 'en' ? {
-  intro: ['Hi, I’m Justin3go.', 'Welcome to my little corner of the world.'],
+  intro: ['Hi, I’m Galen.', 'Welcome to my little corner of the world.'],
   code: ['A little idea, made real.', 'One line of code at a time.'],
-  photo: ['A different point of view.', 'There is a story in the everyday.'],
-  badminton: ['Find another rhythm.', 'Eyes on the next shot.'],
+  photo: ['Just one more chapter.', 'Lately, I keep coming back to Yu Hua.'],
+  swim: ['Learning to swim.', 'One breath at a time.'],
+  game: ['Another round?', 'Eggy Party and Phasmophobia.'],
+  badminton: ['Find another rhythm.', 'On the treadmill, at my own pace.'],
   walk: ['Still on the way.', 'Every step becomes part of the story.'],
   chat: ['And now, over to you.', 'Every conversation is a new beginning.'],
 } : {
-  intro: ['你好，我是 Justin3go。', '很高兴，在这里遇见你。'],
+  intro: ['你好，我是 Galen。', '很高兴，在这里遇见你。'],
   code: ['把小想法，写成日常。', '故事，从一行代码开始。'],
-  photo: ['换个角度，看世界。', '平凡的一天，也值得留住。'],
-  badminton: ['给生活，换个节奏。', '下一拍，继续全力以赴。'],
+  photo: ['再读一章，就一章。', '最近，有点上头余华。'],
+  swim: ['学着游，也学着换气。', '慢一点，没关系。'],
+  game: ['再开一局？', '蛋仔派对和恐鬼症，快乐续杯。'],
+  badminton: ['给生活，换个节奏。', '跑步机上，也能向前。'],
   walk: ['一路走来，继续向前。', '每一步，都算数。'],
   chat: ['接下来，听你说。', '新的故事，从一句你好开始。'],
 })
@@ -77,9 +81,23 @@ async function ensure(scene: JourneyScene) {
   if (!alive || sprites.has(scene) || pending.has(scene) || failed.has(scene)) return
   pending.add(scene)
   try {
-    const sprite = await loadPaperSprite(`https://oss.justin3go.com/paper-journey/paper-journey/${scene}.png`, scene === 'badminton'
-      ? Array.from({ length: 8 }, (_, i) => ({ x: (i % 4) / 4, y: i < 4 ? 0 : .474, width: .25, height: i < 4 ? .474 : .526 }))
-      : undefined, scene === 'badminton')
+    // Preserve the established section identifiers: photo = reading, badminton = treadmill.
+    const pairs = {
+      intro: [[0, 0, 313, 322], [314, 0, 627, 322]],
+      code: [[628, 0, 941, 314], [942, 0, 1254, 314]],
+      photo: [[0, 322, 313, 640], [314, 322, 627, 640]],
+      badminton: [[628, 314, 941, 627], [942, 314, 1254, 627]],
+      swim: [[0, 642, 313, 908], [314, 642, 627, 908]],
+      walk: [[628, 627, 941, 930], [942, 627, 1254, 930]],
+      chat: [[0, 909, 313, 1254], [314, 909, 627, 1254]],
+      game: [[628, 931, 941, 1254], [942, 931, 1254, 1254]],
+    }[scene]
+    const frames = scene === 'badminton' ? [0, 0, 1, 1, 0, 0, 1, 1] : [0, 1, 1, 0]
+    const sprite = await loadPaperSprite('/illustrations/galen-life-atlas.png', frames.map(offset => {
+      const [left, top, right, bottom] = pairs[offset]
+      const x = left / 1254, y = top / 1254
+      return { x, y, width: right / 1254 - x, height: bottom / 1254 - y }
+    }))
     if (!alive) return
     sprites.set(scene, sprite)
     ready.value = true
@@ -96,7 +114,7 @@ function measure() {
     mobile = innerWidth < 860
     const rect = layer.value.getBoundingClientRect()
     size = rect.width
-    isVisible = mobile && size > 0 && rect.bottom > 64 && rect.top < innerHeight
+    isVisible = (mobile || !!props.vignette) && size > 0 && rect.bottom > 64 && rect.top < innerHeight
     measureCanvas()
     return
   }
@@ -188,11 +206,10 @@ function paperCard(x: number, y: number, width: number, height: number, angle: n
     }
     ctx.beginPath(); ctx.arc(14, 11, 2, 0, Math.PI * 2); ctx.fill()
   } else if (kind === 'photo') {
-    ctx.globalAlpha = alpha * .28
-    ctx.fillRect(10, 10, width - 20, height - 28)
-    ctx.globalAlpha = alpha * .7
-    path([[10, height - 18], [width * .4, height * .35], [width * .62, height * .58], [width * .8, height * .3], [width - 10, height - 18]])
-    ctx.stroke(); ctx.beginPath(); ctx.arc(width * .7, 25, 7, 0, Math.PI * 2); ctx.stroke()
+    ctx.globalAlpha = alpha * .55
+    for (let i = 0; i < 4; i++) {
+      path([[14, 20 + i * 13], [width - 14, 20 + i * 13]]); ctx.stroke()
+    }
   } else if (kind === 'chat') {
     ctx.globalAlpha = alpha * .6
     for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(width / 2 - 17 + i * 17, height / 2, 3, 0, Math.PI * 2); ctx.fill() }
@@ -224,17 +241,10 @@ function drawSet(scene: JourneyScene, opacity: number, scatter: number, tick: nu
     }
     path([[432, 115], [440, 103], [453, 109]]); ctx.stroke()
   } else if (scene === 'photo') {
-    path([[174, 120], [174, 98], [199, 98]]); ctx.stroke()
-    path([[401, 98], [426, 98], [426, 120]]); ctx.stroke()
-    path([[174, 374], [174, 398], [199, 398]]); ctx.stroke()
-    path([[401, 398], [426, 398], [426, 374]]); ctx.stroke()
+    path([[174, 140], [174, 98], [203, 98], [203, 140], [188, 132], [174, 140]]); ctx.stroke()
   } else if (scene === 'badminton') {
-    const swing = props.motion ? Math.sin(tick * 1.8 + scrollPosition / 160) : 0
-    ctx.translate(420 + swing * 65, 125 - Math.cos(swing) * 35)
-    ctx.rotate(swing * .7 + .4)
-    path([[-13, -23], [-5, 4], [5, 4], [13, -23], [-13, -23]]); ctx.stroke()
-    path([[-4, -22], [-2, 4], [2, 4], [4, -22]]); ctx.stroke()
-    ctx.beginPath(); ctx.arc(0, 6, 5, 0, Math.PI); ctx.stroke()
+    ctx.setLineDash([12, 9]); ctx.lineDashOffset = props.motion ? -tick * 18 : 0
+    path([[105, 476], [490, 476]]); ctx.stroke()
   } else if (scene === 'walk') {
     ctx.setLineDash([3, 9]); ctx.lineDashOffset = props.motion ? -scrollPosition / 7 : 0
     ctx.beginPath(); ctx.moveTo(90, 478); ctx.bezierCurveTo(210, 415, 381, 544, 529, 435); ctx.stroke()
@@ -250,7 +260,7 @@ function drawSet(scene: JourneyScene, opacity: number, scatter: number, tick: nu
 
 function drawActor(from: JourneyScene, to: JourneyScene, mix: number, tick: number, mouse: number) {
   const ctx = context!
-  const frameFor = (scene: JourneyScene) => poseFrame(mouse, scene === 'walk' ? (props.inlineScene ? tick : scrollPosition / 300) : (scene === 'code' || scene === 'badminton' ? tick : tick * (scene === 'intro' ? .12 : .25)), scene === 'intro' ? 'chat' : scene, props.motion)
+  const frameFor = (scene: JourneyScene) => poseFrame(mouse, scene === 'walk' ? (props.inlineScene ? tick : scrollPosition / 300) : (scene === 'code' || scene === 'badminton' ? tick : tick * (scene === 'intro' ? .12 : .25)), scene === 'intro' || scene === 'game' ? 'chat' : scene === 'swim' ? 'photo' : scene, props.motion)
   const draw = (scene: JourneyScene) => {
     const atlas = sprites.get(scene)
     if (!atlas) return
@@ -391,7 +401,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="layer" class="paper-journey" :class="{ 'is-mounted': mounted, 'is-hero': inHero && !inlineScene, 'is-inline': inlineScene }" :data-scene="current" :data-motion="motion ? 'playing' : 'paused'" aria-hidden="true">
+  <div ref="layer" class="paper-journey" :class="{ 'is-mounted': mounted, 'is-hero': inHero && !inlineScene, 'is-inline': inlineScene, 'is-vignette': vignette }" :data-scene="current" :data-motion="motion ? 'playing' : 'paused'" aria-hidden="true">
     <div ref="stage" class="paper-stage">
       <canvas ref="canvas" class="paper-canvas" :class="{ 'is-ready': ready }"></canvas>
     </div>
@@ -417,6 +427,9 @@ onUnmounted(() => {
 .paper-scene-detail { margin: 5px 0 0 !important; font-size: 10px; line-height: 1.7; }
 .paper-scroll-hint { display: block; margin-top: 23px; font: 9px var(--vp-font-family-mono); letter-spacing: .07em; opacity: .7; }.paper-scroll-hint span { margin-left: 8px; }
 .paper-journey.is-inline { display: none; }
+.paper-journey.is-vignette { display: block; position: relative; inset: auto; width: 100%; height: auto; z-index: auto; }
+.is-vignette .paper-stage { position: relative; width: 100%; aspect-ratio: 1; will-change: auto; }
+.is-vignette .paper-caption { display: none; }
 @media (max-width: 859px) {
   .paper-journey.is-inline { display: block; position: relative; inset: auto; width: 100%; height: auto; z-index: auto; }
   .is-inline .paper-stage { position: relative; width: 100%; aspect-ratio: 1; will-change: auto; }

@@ -1,28 +1,34 @@
 <template>
 	<div class="profile-projects" :class="{ 'is-motion-disabled': !props.motion || reducedMotion }">
 		<div class="profile-project-grid">
-			<a
+			<component
+        :is="project.url ? 'a' : 'article'"
 				v-for="(project, index) in cardProjects"
 				:key="project.name"
 				class="profile-project-card"
-				:href="project.url"
+				:href="project.url || undefined"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
 				<div class="profile-project-media" @pointermove="handlePointerMove" @pointerleave="resetPointer">
-					<img :src="withBase(project.image)" :alt="`${project.name} ${previewLabel}`" width="1200" height="675" loading="lazy" />
+					<div class="project-cover" :class="`cover-${project.id}`" aria-hidden="true">
+              <template v-if="project.id === 'history'"><span class="cover-overline">LOCAL HISTORY / CLI</span><div class="mini-terminal"><span class="terminal-dots">● ● ●</span><code>$ codex-history</code><span>› Your conversations, organized.</span><code>LOCAL · SEARCH · CLEAN UP</code><span class="terminal-ok">A little less clutter.</span></div></template>
+              <template v-else-if="project.id === 'clipboard'"><span class="cover-overline">macOS / LOCAL FIRST</span><div class="mini-clipboard"><span class="clipboard-search">⌕ &nbsp; {{ props.locale === 'en' ? 'Find something copied…' : '找回刚刚复制的内容…' }}</span><span>✧ &nbsp; {{ props.locale === 'en' ? 'A thought worth keeping' : '一段值得留下的话' }}</span><span>↗ &nbsp; github.com/liuyoumi</span><span class="clipboard-shortcut">⌘ ⇧ V</span></div></template>
+              <template v-else-if="project.id === 'reading'"><span class="cover-overline">{{ props.locale === 'en' ? 'ON PAPER / CONCEPT' : '纸上的想法 / 构想中' }}</span><div class="concept-book"><span>“</span><strong>{{ props.locale === 'en' ? 'One more page.' : '读到这里。' }}</strong><i></i><i></i><i></i></div></template>
+              <template v-else><span class="cover-overline">{{ props.locale === 'en' ? 'ON PAPER / CONCEPT' : '纸上的想法 / 构想中' }}</span><div class="concept-run"><span>START WHERE YOU ARE.</span><svg viewBox="0 0 240 80"><path d="M6 63h45l19-36 24 45 29-54 25 40 28-21 23 26h35" /></svg><strong>{{ props.locale === 'en' ? 'A little further.' : '原地，也向前。' }}</strong></div></template>
+            </div>
 				</div>
 				<div class="profile-project-copy">
 					<div class="profile-project-caption" aria-hidden="true"><span class="profile-project-number">{{ String(index + 1).padStart(2, "0") }}</span><span class="profile-project-domain">{{ project.domain }}</span></div>
 					<div class="profile-project-title">
 						<strong>{{ project.name }}</strong>
-						<span aria-hidden="true">↗</span>
+						<span v-if="project.url" aria-hidden="true">↗</span>
 					</div>
 					<p>{{ project.description }}</p>
 				</div>
-			</a>
+			</component>
 		</div>
-		<section class="profile-more-projects" aria-labelledby="more-projects-title">
+		<section v-if="textProjects.length" class="profile-more-projects" aria-labelledby="more-projects-title">
 			<h3 id="more-projects-title">{{ props.locale === 'en' ? 'More projects' : '更多项目' }}</h3>
 			<ul class="profile-project-list">
 				<li v-for="project in textProjects" :key="project.name">
@@ -40,64 +46,26 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { withBase } from "vitepress";
 
 const props = withDefaults(defineProps<{ locale?: "zh" | "en"; motion?: boolean }>(), {
 	locale: "zh",
 	motion: true,
 });
 
-const baseProjects = [
-	{ name: "Turbo0", domain: "turbo0.com", url: "https://turbo0.com", image: "/projects/turbo0-home.jpg" },
-	{ name: "HUNT0", domain: "hunt0.com", url: "https://hunt0.com", image: "/projects/hunt0-home.jpg" },
-	{ name: "Mux0", domain: "mux0.com", url: "https://mux0.com", image: "/projects/mux0.jpg" },
-	{ name: "Input0", domain: "input0.com", url: "https://input0.com", image: "/projects/input0.jpg" },
-	{ name: "FAV0", domain: "fav0.com", url: "https://fav0.com/", image: "/projects/fav0.jpg" },
-	{ name: "FindHarness", domain: "findharness.com", url: "https://findharness.com/", image: "/projects/findharness.jpg" },
-	{ name: "Edit0", domain: "edit0.com", url: "https://edit0.com", image: "/projects/edit0-home.jpg" },
-	{ name: "心之链 · Xin2link", domain: "xin2.link", url: "https://xin2.link", image: "/projects/xin2link-home.jpg" },
-	{ name: "Template0", domain: "template0.com", url: "https://template0.com", image: "/projects/template0-home.jpg" },
-	{ name: "PDFuck", domain: "pdfuck.com", url: "https://pdfuck.com", image: "/projects/pdfuck-home.jpg" },
+const projects = [
+  { id: 'history', name: 'codex-history', domain: 'OPEN SOURCE · CLI', url: 'https://github.com/liuyoumi/codex-history', zh: '管理本地 Codex 对话历史的命令行工具，支持查找、筛选与确认后清理，让历史记录更好打理。', en: 'A CLI for local Codex conversation history: find, filter, and clean up selected records after confirmation.' },
+  { id: 'clipboard', name: 'Clipboard', domain: 'OPEN SOURCE · macOS', url: 'https://github.com/liuyoumi/Clipboard', zh: '一款 macOS 剪贴板历史工具，记录复制过的文字和图片，支持搜索与固定，数据保存在本机。', en: 'A macOS clipboard history tool for copied text and images, with search, pinned items, and local storage.' },
+  { id: 'reading', name: '读到这里', domain: 'CONCEPT', url: '', zh: '构想中：一个轻量阅读手记，收藏句子，也记下合上书时的念头。', en: 'Concept: a small reading journal for favorite passages and thoughts that linger after the last page.' },
+  { id: 'running', name: '原地开跑', domain: 'CONCEPT', url: '', zh: '构想中：一本跑步机日记，记录时间、距离和心情，看看原地跑过了多远。', en: 'Concept: a treadmill diary for time, distance, and mood. A record of how far staying in one place can take you.' },
 ];
-
-const zhDescriptions = [
-	"面向内容创作者的工具与资源导航站。",
-	"支持 AI 提交与声望系统的产品发布平台。",
-	"支持工作区、标签页与分屏，并实时显示 AI Agent 状态的原生 macOS 终端。",
-	"集本地语音转写、AI 润色与自动粘贴于一体的 macOS 语音输入工具。",
-	"每日精选 AI 新闻、模型发布与行业动态。",
-	"发现、筛选并获取 DeepSeek-Harness 插件安装命令的导航站。",
-	"支持版本管理与对话式操作的 AI 图像编辑器。",
-	"基于换位思考、AI 分析与可视化对比的心理问卷小程序。",
-	"近千份免费前端模板，可按用途、技术栈与预览图筛选。",
-	"40+ 纯浏览器运行、注重隐私的免费 PDF 工具。",
-];
-
-const enDescriptions = [
-	"A curated directory of tools and resources for content creators.",
-	"A product launchpad with AI-assisted submissions and a reputation system.",
-	"A native macOS terminal with workspaces, tabs, splits, and live AI agent status.",
-	"A macOS voice input tool with local transcription, AI text refinement, and automatic pasting.",
-	"A daily selection of AI news, model releases, and industry updates.",
-	"A directory to discover and filter DeepSeek-Harness plugins and find install commands.",
-	"A conversational AI image editor with version management.",
-	"A psychological questionnaire mini program using empathy, AI analysis, and visual comparison.",
-	"Nearly a thousand free front-end templates, filterable by use case, stack, and preview.",
-	"40+ free, privacy-focused PDF tools that run entirely in the browser.",
-];
-
-const projects = computed(() => {
-	const descriptions = props.locale === "en" ? enDescriptions : zhDescriptions;
-	return baseProjects.map((project, index) => ({ ...project, description: descriptions[index] }));
-});
-
-const textProjectDomains = ["xin2.link", "template0.com", "pdfuck.com", "fav0.com"];
-const cardProjects = computed(() => projects.value.filter((project) => !textProjectDomains.includes(project.domain)));
-const textProjects = computed(() => projects.value
-	.filter((project) => textProjectDomains.includes(project.domain))
-	.sort((a, b) => textProjectDomains.indexOf(a.domain) - textProjectDomains.indexOf(b.domain)));
-
-const previewLabel = computed(() => (props.locale === "en" ? "project preview" : "项目预览图"));
+const englishNames: Record<string, string> = { reading: 'One More Page', running: 'Run in Place' };
+const cardProjects = computed(() => projects.map(project => ({
+  ...project,
+  name: props.locale === 'en' ? (englishNames[project.id] || project.name) : project.name,
+  domain: project.url ? project.domain : (props.locale === 'en' ? 'CONCEPT · NOT RELEASED' : '构想中 · 尚未发布'),
+  description: props.locale === 'en' ? project.en : project.zh,
+})));
+const textProjects = computed(() => [] as typeof cardProjects.value);
 
 const reducedMotion = ref(false);
 let motionQuery: MediaQueryList | undefined;
@@ -145,6 +113,28 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.project-cover { height: 100%; min-height: 160px; padding: 18px; display: flex; flex-direction: column; justify-content: center; gap: 12px; overflow: hidden; background: #eee9df; color: #31352e; }
+.cover-overline { font: 8px var(--vp-font-family-mono); letter-spacing: .1em; opacity: .7; }
+.cover-history { background: #e4e9e2; }
+.cover-clipboard { background: #e4eaf4; }
+.cover-reading { background: #f1e9d9; }
+.cover-running { background: #e5ebe3; }
+.mini-terminal { display: grid; gap: 6px; padding: 12px; background: #25312e; color: #dce5d5; border-radius: 7px; box-shadow: 0 8px 18px #1e292c25; font: 8px/1.5 var(--vp-font-family-mono); }
+.mini-terminal code { background: transparent; padding: 0; color: #eff5e9; font-size: inherit; }
+.terminal-dots { color: #c6a976; letter-spacing: 3px; font-size: 6px; }
+.terminal-ok { color: #b5c4a3; }
+.mini-clipboard { display: grid; gap: 8px; padding: 14px; border-radius: 8px; background: #ffffffdc; box-shadow: 0 8px 18px #263b5720; font-size: 9px; }
+.clipboard-search { padding-bottom: 8px; border-bottom: 1px solid #d9dee7; opacity: .65; }
+.clipboard-shortcut { text-align: right; opacity: .6; }
+.concept-book { position: relative; display: grid; gap: 10px; padding: 16px 22px; background: #fffaf0; border-left: 5px solid #bdb295; transform: rotate(-3deg); box-shadow: 4px 6px 0 #ddd1bc; }
+.concept-book > span { position: absolute; right: 10px; top: 0; font: 65px Georgia,serif; opacity: .15; }
+.concept-book strong { font: 18px Georgia,serif; }
+.concept-book i { display: block; height: 1px; background: #ded4c5; }
+.concept-run { display: grid; gap: 6px; padding: 12px 4px; }
+.concept-run > span { font: 8px var(--vp-font-family-mono); opacity: .65; }
+.concept-run svg { width: 100%; height: 65px; fill: none; stroke: #65836a; stroke-width: 2; }
+.concept-run strong { font-size: 14px; font-weight: 500; }
+
 .profile-projects {
   width: 100%; max-width: 720px; margin: 36px auto 40px;
 }

@@ -1,76 +1,36 @@
-import { type HeadConfig, type TransformContext } from "vitepress";
+import { type HeadConfig, type TransformContext } from 'vitepress';
+import { site } from '../../config/site';
+import { siteUrl } from '../../config/deployment';
 
-// 处理每个页面的元数据
-export function handleHeadMeta(context: TransformContext) {
+export function handleHeadMeta(context: TransformContext): HeadConfig[] {
   const { description, title, relativePath, frontmatter } = context.pageData;
-
   const curDesc = description || context.description;
-  const cover = frontmatter.cover || 'https://justin3go.com/bg.jpg'
-  const cardType = frontmatter.cover ? 'summary_large_image' : 'summary'
-  // 增加 Twitter 卡片
-  const ogUrl: HeadConfig = ["meta", { property: "og:url", content: addBase(relativePath) }]
-  const ogTitle: HeadConfig = ["meta", { property: "og:title", content: title }]
-  const ogDescription: HeadConfig = ["meta", { property: "og:description", content: curDesc }]
-  const ogImage: HeadConfig = ["meta", { property: "og:image", content: cover }]
-  const twitterCard: HeadConfig = ["meta", { name: "twitter:card", content: cardType }]
-  const twitterImage: HeadConfig = ["meta", { name: "twitter:image:src", content: cover }]
-  const twitterDescription: HeadConfig = ["meta", { name: "twitter:description", content: curDesc }]
-
-  const twitterHead: HeadConfig[] = [
-    ogUrl, ogTitle, ogDescription, ogImage,
-    twitterCard, twitterDescription, twitterImage,
-  ]
-
-  // 预加载字体
-  const preloadHead: HeadConfig[] = handleFontsPreload(context)
-
-  return [...twitterHead, ...preloadHead]
-}
-
-export function addBase(relativePath: string) {
-  const host = 'https://justin3go.com'
-  if (relativePath.startsWith('/')) {
-    return host + relativePath
-  } else {
-    return host + '/' + relativePath
+  const head: HeadConfig[] = [
+    ['meta', { property: 'og:site_name', content: site.name }],
+    ['meta', { property: 'og:title', content: title || site.name }],
+    ['meta', { property: 'og:description', content: curDesc }],
+    ['meta', { name: 'twitter:card', content: frontmatter.cover ? 'summary_large_image' : 'summary' }],
+    ['meta', { name: 'twitter:description', content: curDesc }],
+  ];
+  // Absolute canonical, social-image and RSS URLs wait for a real website URL.
+  if (siteUrl) {
+    const url = addBase(relativePath);
+    const cover = new URL(frontmatter.cover || site.avatar, `${siteUrl}/`).href;
+    head.push(
+      ['link', { rel: 'canonical', href: url }],
+      ['meta', { property: 'og:url', content: url }],
+      ['meta', { property: 'og:image', content: cover }],
+      ['meta', { name: 'twitter:image', content: cover }],
+      ['link', { rel: 'alternate', type: 'application/rss+xml', title: `${site.name} RSS`, href: `${siteUrl}/${relativePath.startsWith('en/') ? 'feed-en.xml' : 'feed.xml'}` }],
+    );
   }
+  return head;
 }
 
-export function handleFontsPreload({ assets }: TransformContext) {
-  const SourceHanSerifCN = assets.find(file => /SourceHanSerifCN-VF\.\w+\.otf/)
-  const FiraCode = assets.find(file => /FiraCode-VF\.\w+\.woff2/)
-  const Niconne = assets.find(file => /Niconne-Regular\.\w+\.ttf/)
-
-  return [
-    SourceHanSerifCN && [
-      'link',
-      {
-        rel: 'preload',
-        href: SourceHanSerifCN,
-        as: 'font',
-        type: 'font/otf',
-        crossorigin: ''
-      }
-    ],
-    FiraCode && [
-      'link',
-      {
-        rel: 'preload',
-        href: FiraCode,
-        as: 'font',
-        type: 'font/woff2',
-        crossorigin: ''
-      }
-    ],
-    Niconne && [
-      'link',
-      {
-        rel: 'preload',
-        href: Niconne,
-        as: 'font',
-        type: 'font/ttf',
-        crossorigin: ''
-      }
-    ]
-  ].filter(Boolean) as HeadConfig[]
+export function addBase(relativePath: string): string {
+  const route = relativePath
+    .replace(/^\//, '')
+    .replace(/(^|\/)(index|about)\.md$/, '$1')
+    .replace(/\.md$/, '');
+  return `${siteUrl}/${route.split('/').map(encodeURIComponent).join('/')}`;
 }

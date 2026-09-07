@@ -19,19 +19,49 @@ const props = withDefaults(defineProps<{ locale?: "zh" | "en" }>(), {
 });
 
 const zhItems = [
-	{ time: "2001", title: "故事开始", description: "出生。从这里开始，慢慢认识世界。" },
-	{ time: "2019 — 2023", title: "计算机科学与技术", description: "本科就读计算机科学与技术，开始探索前端与产品开发。" },
-	{ time: "2022.07 — 2022.10", title: "互联网大厂 · 前端实习", description: "走进真实业务，学习团队协作与产品交付。" },
-	{ time: "2023.03 — 2025.09", title: "国企 · 前端工程师", description: "积累工程经验，也开始把个人想法做成独立产品。" },
-	{ time: "2025.09 — 至今", title: "互联网大厂 · 前端工程师", description: "继续打磨前端工程能力，探索 AI 与独立开发的更多可能。" },
+  {
+    "time": "2002",
+    "title": "故事开始",
+    "description": "来到这个世界，故事从这一页开始。往后的日子，慢慢走，慢慢看。"
+  },
+  {
+    "time": "2021 — 2025",
+    "title": "软件工程",
+    "description": "用四年认识软件，也认识自己。学着拆解问题，把脑海里的想法一点点写成现实。"
+  },
+  {
+    "time": "2024 — 2025",
+    "title": "互联网中厂 · 前端实习",
+    "description": "从课堂走进真实业务，在页面、代码与团队协作中，慢慢找到开发者的节奏。"
+  },
+  {
+    "time": "2025 — 至今",
+    "title": "互联网中厂 · AI 应用开发工程师",
+    "description": "探索 AI 能做些什么，也琢磨怎样让它更好用。在尝试与打磨之间，继续积累自己的答案。"
+  }
 ];
 
 const enItems = [
-	{ time: "2001", title: "The story begins", description: "Born. The start of a lifelong curiosity about the world." },
-	{ time: "2019 — 2023", title: "Computer Science", description: "Studied Computer Science and began exploring frontend engineering and product development." },
-	{ time: "2022.07 — 2022.10", title: "Frontend intern · Internet company", description: "Joined a real product team and learned how to collaborate and ship." },
-	{ time: "2023.03 — 2025.09", title: "Frontend engineer · State-owned enterprise", description: "Built engineering experience while turning personal ideas into independent products." },
-	{ time: "2025.09 — Present", title: "Frontend engineer · Internet company", description: "Deepening my frontend craft and exploring what AI can bring to independent product development." },
+  {
+    "time": "2002",
+    "title": "The story begins",
+    "description": "A first page in a much longer story. Plenty of time to walk, look around, and discover."
+  },
+  {
+    "time": "2021 — 2025",
+    "title": "Software Engineering",
+    "description": "Four years of learning about software and myself. Breaking problems down and turning ideas into something real."
+  },
+  {
+    "time": "2024 — 2025",
+    "title": "Frontend intern · Mid-sized internet company",
+    "description": "From the classroom to real products, finding my rhythm through interfaces, code, and teamwork."
+  },
+  {
+    "time": "2025 — Present",
+    "title": "AI application engineer · Mid-sized internet company",
+    "description": "Exploring what AI can do and how to make it useful. Learning through experiments, iteration, and everyday work."
+  }
 ];
 
 const items = computed(() => [...(props.locale === "en" ? enItems : zhItems)].reverse());

@@ -1,6 +1,6 @@
 ---
 name: blog-post-processor
-description: "Process Chinese blog posts for the justin3go.com VitePress blog: rename to English slug, add frontmatter and AI summary, and translate to English. Triggers when the user mentions processing a blog post, translating an article, adding summaries, renaming post files, or says things like 'process this post', 'translate this article to English', 'add AI summary', 'rename this blog post'. Also triggers when the user provides a Chinese markdown post file and wants it prepared for publishing in both Chinese and English versions."
+description: "Process Chinese blog posts for the Galen VitePress blog: rename to English slug, add frontmatter and AI summary, and translate to English. Triggers when the user mentions processing a blog post, translating an article, adding summaries, renaming post files, or says things like 'process this post', 'translate this article to English', 'add AI summary', 'rename this blog post'. Also triggers when the user provides a Chinese markdown post file and wants it prepared for publishing in both Chinese and English versions."
 ---
 
 # Blog Post Processor
@@ -53,7 +53,7 @@ Convert the Chinese title to a concise, descriptive English slug:
 **Examples:**
 - "我把 Harness Engineering 也提炼成了 SKILL" → `03-harness-engineering-distilled-into-a-skill.md`
 - "GPT4o生图风格小全" → `11-gpt-4o-image-generation-guide.md`
-- "HUNT0 上线了——尽早发布，尽早发现" → `01-hunt0-is-live-ship-early-hunt-early.md`
+- "我的阅读手记" → `01-my-reading-journal.md`
 
 ### Step 3: Add/Fix Frontmatter
 

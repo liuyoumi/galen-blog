@@ -8,6 +8,8 @@ isNoBackBtn: true
 ---
 
 <!-- 之所以将代码写在 md 里面，而非单独封装为 Vue 组件，因为 aside 不会动态刷新，参考 https://github.com/vuejs/vitepress/issues/2686 -->
+<div v-if="!posts.length" class="empty-state"><h1>Archive</h1><p>A new story starts here. The first post is on its way.</p></div>
+
 <template v-for="[year, postGroup] in postGroups" :key="year">
   <h2 :id="year" class="post-title">
     <a
@@ -54,6 +56,8 @@ const postGroups = computed(() => {
 });
 </script>
 <style lang="scss" scoped>
+.empty-state { padding: 48px 0 80px; }
+.empty-state p { color: var(--vp-c-text-2); }
 
 .mr-2 {
 	margin-right: 2px;

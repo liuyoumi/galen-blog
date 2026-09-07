@@ -1,77 +1,68 @@
-<h4 align="right"><a href="./README.md">English</a> | <strong>简体中文</strong> </h4>
+# Galen 的个人博客
 
-<div align="center">
+慢慢生活，认真记录，留一点好奇给明天。
 
-<a href="https://justin3go.com" target="blank">
-  <img src="https://justin3go.com/ava.png" height="100px" alt="logo"/>
-</a>
+[English](README.md) · [GitHub](https://github.com/liuyoumi) · [抖音](https://v.douyin.com/53pzh9MDf7E/)
 
-# Justin3go Blog
+成都 · AI 应用开发工程师。这里记录项目、阅读和生活。
 
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![VitePress](https://img.shields.io/badge/VitePress-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Vue-3](https://img.shields.io/badge/Vue-3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
-![TDesign](https://img.shields.io/badge/TDesign-0052CC?style=for-the-badge&logo=tdesign&logoColor=white)
-![Cloudflare Pages](https://img.shields.io/badge/Cloudflare%20Pages-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
-![Giscus](https://img.shields.io/badge/Giscus-181717?style=for-the-badge&logo=github&logoColor=white)
-![Support RSS](https://img.shields.io/badge/Support%20RSS-FFA500?style=for-the-badge&logo=rss&logoColor=white)
-![Support I18N](https://img.shields.io/badge/Support%20I18N-0078D4?style=for-the-badge&logo=google-translate&logoColor=white)
-![SEO](https://img.shields.io/badge/SEO-4285F4?style=for-the-badge&logo=google&logoColor=white)
+## 本地开发
 
-一款功能齐全的、现代化的、简洁优雅的静态博客，基于 vitepress；主要记录✍️我的博客、笔记。
+需要 Node.js 22.18+ 和 pnpm 11。
 
-每周末/周六如有更新 release 一次，文章发布以及网站修改会记录在 release 中，欢迎 star/watch(custom->release)关注最新动态~
-
-[![changelog](https://img.shields.io/badge/changelog-→-0052CC?style=for-the-badge&logo=ReSharper&logoColor=white)](./CHANGELOG.md)
-
-
-[![PR Welcome](https://img.shields.io/badge/PR-Welcome-EA4AAA?style=for-the-badge&logo=git&logoColor=white)](https://github.com/Justin3go/justin3go.com/pulls)
-[![Request-Feature](https://img.shields.io/badge/Request-Feature-007BFF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Justin3go/justin3go.com/issues/new/choose)
-[![Report-Bug](https://img.shields.io/badge/Report-Bug-red?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Justin3go/justin3go.com/issues/new/choose)
-
-![demo](./images/demo.png)
-
-</div>
-
-## 功能特性
-
-1. 🌓 提供明暗模式切换功能，适应不同的阅读环境。
-2. 📖 支持博客分页、摘要、标签功能，方便用户查看。
-3. 🌍 支持中英双语界面，方便不同语言用户的使用。
-4. 📡 提供 RSS 订阅功能，支持中英文内容更新推送。
-5. 💬 集成 Giscus 评论系统，便于用户交流和反馈。
-6. 🖼️ 支持高清大图预览，优化视觉体验。
-7. 📜 允许自定义字体设置，提升阅读舒适度。
-8. 🔍 进行 SEO 优化，包括 Sitemap 生成、Twitter Card 和 Open Graph 标签支持，提高搜索引擎可见性。
-
-## 开发
-
-```bash
-git clone git@github.com:Justin3go/justin3go.com.git
-cd FAV0
-
-npm i -g pnpm # 如果需要
-pnpm i
-pnpm docs:dev
+```sh
+pnpm install
+pnpm run docs:dev
+pnpm run test
+pnpm run docs:build
+pnpm run docs:preview
 ```
-1. 修改 giscus 评论配置，`.vitepress/theme/components/Comments.vue`中的`giscus`配置项;
-2. 修改`utils`文件夹下的中的侧边栏配置、RSS 配置、元信息配置等;
-3. 修改`config`文件夹下的相关配置，主要是 title、description、head 的 GA 配置等;
-4. 修改`posts/**`与`en/posts/**`目录中的文章内容为自己的内容;
 
-## 协议
+构建结果位于 `docs/.vitepress/dist`，可部署到支持静态文件的网站托管平台。
 
-本仓库采用双协议授权，即 MIT 协议和 CC-BY-4.0 协议：
+## 内容与配置
 
-- 所有`.md`文件采用 CC-BY-4.0 协议协议，你需要保留署名权
-- 其他代码文件采用 MIT 协议，你可以自由使用
+- `docs/.vitepress/config/site.ts`：昵称、邮箱、社交链接、Algolia 搜索和 Giscus 评论。
+- `ProfileHome.vue`、`ProfileTimeline.vue`、`ProfileProjects.vue`：中英文生活介绍、经历、作品。
+- `docs/posts` / `docs/en/posts`：中英文文章；`docs/notes` / `docs/en/notes`：笔记。目前为空，等待自己的内容。发布笔记时，在 `createSideBar.ts` 添加对应的目录项。
+- `docs/friends.md` / `docs/en/friends.md`：友链页面，等待添加朋友。
+- `docs/public/ava.png`：GitHub 头像，同时作为 favicon 和默认分享图片。
+- `docs/public/payments`：用户提供的收款码；页面通过 SVG 视口只展示二维码及白边，原图保留，文案为“请我喝杯咖啡”。
+- `design/galen-assets.md`：原创纸片插画的生成提示词与场景映射。
 
-具体内容请查看[LICENSE](./LICENSE)文件。
+真实作品：codex-history、Clipboard。读到这里、原地开跑是明确标注的构想，尚未发布。
 
-## 旧版博客
+## 上线前待补充
 
-本次博客重构做了许多变化，如果你更喜欢查看旧版博客，请访问：
+### 网站地址与 Google Analytics
 
-[v0-9-5.justin3go-com.pages.dev](https://v0-9-5.justin3go-com.pages.dev/)
+在构建环境设置 `SITE_URL` 为实际公开网站根地址；可用托管平台提供的地址，不强制购买独立域名。
+设置 `GA_MEASUREMENT_ID` 为自己的 `G-…` 衡量 ID，然后重新构建。
 
+```sh
+SITE_URL=https://your-site.example GA_MEASUREMENT_ID=G-YOURID pnpm run docs:build
+```
 
+上面只是格式示例，请替换。项目读取构建进程的环境变量，不自动加载 `.env`。
+未提供网站地址时不生成 canonical、sitemap 和 RSS；提供后自动恢复。未提供 GA ID 时不加载统计脚本。
+
+### Algolia
+
+已配置自己的 Application ID、公开 Search API Key 和 `galen_blog` 索引。索引为空时不会有搜索结果。
+部署并发布自己的文章后，需要配置爬虫/索引同步。当前前端使用 DocSearch，应导入兼容的 `hierarchy`、`content`、`url` 记录，并配置 `lang`、`tags` 筛选属性。
+不要将 Write/Admin API Key 放进前端或仓库。索引写入密钥应留在 Algolia 或部署平台的 secrets 中。
+
+### Giscus
+
+评论连接 `liuyoumi/galen-blog` 的 Announcements 分类。需保持仓库公开、Discussions 开启，并授权 Giscus 应用。
+中英文相同文章共享讨论；首页等设置 `isNoComment: true` 的页面隐藏评论。登录及首次发表评论请在部署后由站主验证。
+
+### 广告与版本发布
+
+AdSense 待申请；当前没有广告脚本或 ads.txt。获得自己的广告配置后再接入。
+GitHub 版本发布工作流需要仓库配置 `RELEASE_TOKEN`，可手动触发；它不会部署网站。
+
+## 来源与许可
+
+基于 [Justin3go/justin3go.com](https://github.com/Justin3go/justin3go.com) 定制，保留原有 VitePress 主题设计与功能。原作者文章、笔记、个人作品和收款信息已移除。
+沿用原仓库 [LICENSE](LICENSE) 中的许可条款和声明。品牌与个人资料现属于 Galen。

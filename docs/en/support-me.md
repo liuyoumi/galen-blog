@@ -15,15 +15,7 @@ footer: false
 If you enjoy my work, feel free to support me in any way, as it will be the motivation for me to continue creating.
 </p>
 
-## Sponsors
-
-Note: Commercial sponsorships are not accepted.
-
-[Katon](https://hellokaton.me/)、\*\*Hua、Tom\*\*🐯
-
-## Thank You Notes
-
-- Nice article, quite interesting. (Translated from Chinese)
+Click a QR code to view the original image. Thank you for your support, and feel free to send me a note.
 
 <script lang="ts" setup>
 import SupportMe from "../.vitepress/theme/components/SupportMe.vue";
