@@ -1,0 +1,43 @@
+name: Sync search index
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'scripts/algolia-records.mjs'
+      - 'scripts/algolia-records.d.mts'
+      - 'scripts/sync-algolia.mjs'
+      - 'tests/algolia-search.test.mjs'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/search.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Finish the active sync before starting another; never interrupt a partial upload.
+concurrency:
+  group: algolia-galen-blog
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm docs:build
+      - run: pnpm search:check
+      - name: Sync Algolia
+        run: pnpm search:sync
+        env:
+          ALGOLIA_WRITE_API_KEY: ${{ secrets.ALGOLIA_WRITE_API_KEY }}

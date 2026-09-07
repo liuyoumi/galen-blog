@@ -9,6 +9,7 @@ import { handleHeadMeta } from "../theme/utils/handleHeadMeta";
 import { search as zhSearch } from './zh'
 import { site } from './site'
 import { siteUrl, gaMeasurementId } from './deployment'
+import { createSearchIndex } from '../theme/utils/searchIndex'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -42,7 +43,7 @@ export default defineConfig({
     return handleHeadMeta(context)
   },
   buildEnd: async (config: SiteConfig) => {
-    await Promise.all([createRssFileZH(config), createRssFileEN(config)]);
+    await Promise.all([createRssFileZH(config), createRssFileEN(config), createSearchIndex(config)]);
   },
 
   themeConfig: {

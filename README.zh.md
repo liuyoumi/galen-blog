@@ -48,9 +48,28 @@ SITE_URL=https://your-site.example GA_MEASUREMENT_ID=G-YOURID pnpm run docs:buil
 
 ### Algolia
 
-已配置自己的 Application ID、公开 Search API Key 和 `galen_blog` 索引。索引为空时不会有搜索结果。
-部署并发布自己的文章后，需要配置爬虫/索引同步。当前前端使用 DocSearch，应导入兼容的 `hierarchy`、`content`、`url` 记录，并配置 `lang`、`tags` 筛选属性。
-不要将 Write/Admin API Key 放进前端或仓库。索引写入密钥应留在 Algolia 或部署平台的 secrets 中。
+搜索界面沿用 Algolia DocSearch，公开配置在 `site.ts`，索引为 `galen_blog`。`.github/workflows/search.yml` 在 `main` 上的文章、主题或索引脚本变更推送后自动构建并同步，也支持在 Actions 中手动运行 **Sync search index**。
+
+只需配置一次写入权限：
+
+1. 在 Algolia 的 **Settings → API Keys** 新建专用 Key。Indices 限制为 `galen_blog`；ACL 勾选 `search`、`browse`、`addObject`、`deleteObject`、`editSettings`。不要添加 HTTP Referrers 限制，GitHub Actions 不会发送浏览器来源。
+2. 在 [GitHub 仓库 Secrets](https://github.com/liuyoumi/galen-blog/settings/secrets/actions) 添加 Repository secret：名称 `ALGOLIA_WRITE_API_KEY`，值为该 Key。不要把写入 Key 写进代码、前端或 `.env` 提交到仓库。
+3. 首次添加 Secret 后，在 [Actions](https://github.com/liuyoumi/galen-blog/actions/workflows/search.yml) 选择 **Sync search index → Run workflow → main**。成功后文章即可被搜索。
+
+此后正常新增、修改或删除 Markdown 并推送 `main` 即可，不需要逐篇配置。它同步 GitHub 上的内容，不负责部署网页；网站上线后请将 `main` 同时作为托管平台的发布分支，避免索引先于网页更新。
+
+构建从生成的 HTML 提取正文、标题和真实锚点，生成 DocSearch 记录，按 `zh-Hans` / `en-US` 筛选。支持相对链接，无需先购买域名。设置文章 frontmatter `search: false` 或 `draft: true` 可不加入索引（这不会阻止页面被构建或公开访问）。
+
+```sh
+pnpm docs:build
+pnpm search:check # 本地校验索引，不访问 Algolia
+# 仅在已通过环境变量提供专用写入 Key 时手动同步：
+pnpm search:sync
+```
+
+中间文件位于已忽略的 `docs/.vitepress/cache/algolia-records.json`，不随网页发布。普通构建不会写入 Algolia。同步只上传变化的记录，等上传成功后再删除过时的 `galen:` 记录；不会清空索引或删除其他工具的记录。构建、校验或上传失败会使工作流失败，修复后重新运行即可；空索引产物会拒绝同步，防止意外清空数据。
+
+原项目在仓库中仅配置了 Algolia 搜索端，没有提交爬虫配置或索引同步工作流，无法据此确认原作者后台的抓取计划。本项目使用上述 GitHub Actions 直接同步，不需要另外配置爬虫。
 
 ### Giscus
 

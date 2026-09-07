@@ -7,13 +7,17 @@
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "search:check": "node scripts/sync-algolia.mjs --dry-run",
+    "search:sync": "node scripts/sync-algolia.mjs"
   },
   "keywords": [],
   "author": "Galen",
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "@types/node": "^20.12.12",
+    "algoliasearch": "5.20.3",
+    "cheerio": "1.0.0-rc.10",
     "feed": "^4.2.2",
     "markdown-it-mathjax3": "^4.3.2",
     "sass": "^1.77.2",
