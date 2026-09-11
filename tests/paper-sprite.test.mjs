@@ -1,6 +1,19 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { keyMagenta } from '../docs/.vitepress/theme/components/paperSprite.ts'
+import { keyMagenta, spriteCellSize } from '../docs/.vitepress/theme/components/paperSprite.ts'
+
+test('HD poses retain native detail through the 90% fit instead of shrinking to 512px', () => {
+  for (const side of [720, 980, 1024, 1536]) {
+    const cell = spriteCellSize(side)
+    assert.ok(cell * 0.9 >= side)
+    assert.ok(cell * 0.9 < side + 1)
+  }
+})
+
+test('sprite cells have bounded memory and safe dimensions for unusable or oversized input', () => {
+  for (const side of [0, -10, NaN, Infinity, 100]) assert.equal(spriteCellSize(side), 512)
+  assert.equal(spriteCellSize(10000), 2048)
+})
 
 test('pure magenta is made fully transparent', () => {
   const pixels = new Uint8ClampedArray([

@@ -1,13 +1,20 @@
 const SOURCE_COLUMNS = 2
-const OUTPUT_CELL_SIZE = 512
 const CUTOUT_HEIGHT_RATIO = 0.9
 const BOUND_ALPHA_THRESHOLD = 8
+
+/** Keep source detail instead of shrinking every pose into a 512px cell. */
+export function spriteCellSize(longestSide: number): number {
+  if (!Number.isFinite(longestSide) || longestSide <= 0) return 512
+  return Math.max(512, Math.min(2048, Math.ceil(longestSide / CUTOUT_HEIGHT_RATIO)))
+}
 
 export type PaperSpriteRegion = {
   x: number
   y: number
   width: number
   height: number
+  /** Normalise a source pose's facing direction once while preparing the atlas. */
+  flipX?: boolean
 }
 
 const DEFAULT_REGIONS: readonly PaperSpriteRegion[] = [
@@ -231,16 +238,18 @@ export async function loadPaperSprite(
     return centre
   })
 
-  const outputCanvas = makeCanvas(OUTPUT_CELL_SIZE * SOURCE_COLUMNS, OUTPUT_CELL_SIZE * (regions.length / SOURCE_COLUMNS))
+  const cellSize = spriteCellSize(Math.max(maxWidth, maxHeight))
+  const outputCanvas = makeCanvas(cellSize * SOURCE_COLUMNS, cellSize * (regions.length / SOURCE_COLUMNS))
   const outputContext = outputCanvas.getContext('2d')
   if (!outputContext) throw new Error('Unable to create a 2D context for paper sprite atlas')
   outputContext.imageSmoothingEnabled = true
+  outputContext.imageSmoothingQuality = 'high'
 
   if (maxWidth === 0 || maxHeight === 0) return outputCanvas
 
-  let scale = OUTPUT_CELL_SIZE * CUTOUT_HEIGHT_RATIO / maxHeight
-  if (maxWidth * scale > OUTPUT_CELL_SIZE * CUTOUT_HEIGHT_RATIO) {
-    scale = OUTPUT_CELL_SIZE * CUTOUT_HEIGHT_RATIO / maxWidth
+  let scale = cellSize * CUTOUT_HEIGHT_RATIO / maxHeight
+  if (maxWidth * scale > cellSize * CUTOUT_HEIGHT_RATIO) {
+    scale = cellSize * CUTOUT_HEIGHT_RATIO / maxWidth
   }
 
   frameBounds.forEach((bounds, frameIndex) => {
@@ -250,13 +259,18 @@ export async function loadPaperSprite(
     const drawHeight = size.height * scale
     const column = frameIndex % SOURCE_COLUMNS
     const row = Math.floor(frameIndex / SOURCE_COLUMNS)
-    const cellLeft = column * OUTPUT_CELL_SIZE
-    const cellTop = row * OUTPUT_CELL_SIZE
+    const cellLeft = column * cellSize
+    const cellTop = row * cellSize
     const drawLeft = alignFeet
-      ? cellLeft + OUTPUT_CELL_SIZE / 2 - (centres[frameIndex] - bounds.minX) * scale
-      : cellLeft + (OUTPUT_CELL_SIZE - drawWidth) / 2
-    const drawTop = cellTop + OUTPUT_CELL_SIZE - drawHeight
+      ? cellLeft + cellSize / 2 - (centres[frameIndex] - bounds.minX) * scale
+      : cellLeft + (cellSize - drawWidth) / 2
+    const drawTop = cellTop + cellSize - drawHeight
 
+    outputContext.save()
+    if (regions[frameIndex].flipX) {
+      outputContext.translate(drawLeft * 2 + drawWidth, 0)
+      outputContext.scale(-1, 1)
+    }
     outputContext.drawImage(
       sourceCanvas,
       bounds.minX,
@@ -268,6 +282,7 @@ export async function loadPaperSprite(
       drawWidth,
       drawHeight,
     )
+    outputContext.restore()
   })
 
   return outputCanvas

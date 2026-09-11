@@ -81,23 +81,13 @@ async function ensure(scene: JourneyScene) {
   if (!alive || sprites.has(scene) || pending.has(scene) || failed.has(scene)) return
   pending.add(scene)
   try {
-    // Preserve the established section identifiers: photo = reading, badminton = treadmill.
-    const pairs = {
-      intro: [[0, 0, 313, 322], [314, 0, 627, 322]],
-      code: [[628, 0, 941, 314], [942, 0, 1254, 314]],
-      photo: [[0, 322, 313, 640], [314, 322, 627, 640]],
-      badminton: [[628, 314, 941, 627], [942, 314, 1254, 627]],
-      swim: [[0, 642, 313, 908], [314, 642, 627, 908]],
-      walk: [[628, 627, 941, 930], [942, 627, 1254, 930]],
-      chat: [[0, 909, 313, 1254], [314, 909, 627, 1254]],
-      game: [[628, 931, 941, 1254], [942, 931, 1254, 1254]],
-    }[scene]
-    const frames = scene === 'badminton' ? [0, 0, 1, 1, 0, 0, 1, 1] : [0, 1, 1, 0]
-    const sprite = await loadPaperSprite('/illustrations/galen-life-atlas.png', frames.map(offset => {
-      const [left, top, right, bottom] = pairs[offset]
-      const x = left / 1254, y = top / 1254
-      return { x, y, width: right / 1254 - x, height: bottom / 1254 - y }
-    }))
+    // Each HD file has two native-resolution poses. Historical identifiers:
+    // photo = reading, badminton = treadmill. Water splashes need an offset seam.
+    const split = scene === 'swim' ? 750 / 1536 : .5
+    const sprite = await loadPaperSprite(`/illustrations/galen-hd/${scene}.png`, [
+      { x: 0, y: 0, width: split, height: 1 },
+      { x: split, y: 0, width: 1 - split, height: 1 },
+    ])
     if (!alive) return
     sprites.set(scene, sprite)
     ready.value = true
@@ -176,6 +166,7 @@ function measureCanvas() {
   if (canvas.value && canvas.value.width !== pixels) {
     canvas.value.width = pixels
     canvas.value.height = pixels
+    if (context) context.imageSmoothingQuality = 'high'
   }
 }
 
@@ -264,7 +255,8 @@ function drawActor(from: JourneyScene, to: JourneyScene, mix: number, tick: numb
   const draw = (scene: JourneyScene) => {
     const atlas = sprites.get(scene)
     if (!atlas) return
-    const frame = frameFor(scene)
+    const poseOrder = scene === 'badminton' ? [0, 0, 1, 1, 0, 0, 1, 1] : [0, 1, 1, 0]
+    const frame = poseOrder[frameFor(scene)]
     const cell = atlas.width / 2
     ctx.save()
     // Face the project content on the right without mirroring the scene lettering.
@@ -280,7 +272,7 @@ function drawActor(from: JourneyScene, to: JourneyScene, mix: number, tick: numb
       blend.globalCompositeOperation = 'lighter'
       for (const [index, opacity] of [[pose.from, 1 - pose.mix], [pose.to, pose.mix]]) {
         blend.globalAlpha = opacity
-        blend.drawImage(atlas, (index % 2) * cell, Math.floor(index / 2) * cell, cell, cell, 0, 0, cell, cell)
+        blend.drawImage(atlas, poseOrder[index] * cell, 0, cell, cell, 0, 0, cell, cell)
       }
       ctx.drawImage(poseCanvas, 60, 5, 480, 480)
     } else drawFrame(frame)
